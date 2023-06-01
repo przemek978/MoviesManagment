@@ -7,9 +7,9 @@ namespace MoviesManagment.Models
 {
     public static class MovieAPI
     {
-        private static readonly HttpClient httpClient;
+        private static HttpClient httpClient;
 
-        public MovieAPI()
+        static MovieAPI()
         {
             httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("https://imdb-api.com");
@@ -17,23 +17,32 @@ namespace MoviesManagment.Models
 
         public static async Task<Movie> SearchMovies(Movie movie)
         {
-            string endpoint = $"/API/AdvancedSearch/k_ou27i01z?title=" + movie.Title + "&release_date=" + movie.YearProduction + "-01-01," + movie.YearProduction + "-12-31";
+           StringBuilder endpoint =new StringBuilder($"/API/AdvancedSearch/k_ou27i01z?title=" + movie.Title + "&release_date=" + movie.YearProduction + "-01-01," + movie.YearProduction + "-12-31");
 
-            HttpResponseMessage response = await httpClient.GetAsync(endpoint);
+            if (movie.Genres != null)
+            {
+                endpoint.Append("&genres=" + movie.Genres);
+            }
+            if (movie.Stars != null)
+            {
+                endpoint.Append("&stars=" + movie.Stars);
+            }
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(endpoint.ToString());
 
             response.EnsureSuccessStatusCode();
 
             string result = await response.Content.ReadAsStringAsync();
 
-            var searchResult = JObject.Parse(result); ;
+            var searchResult = JObject.Parse(result);
             JArray results = (JArray)searchResult["results"]; 
 
             var search= results.FirstOrDefault(r => r["title"].ToString().Equals(movie.Title, StringComparison.OrdinalIgnoreCase));
-            //var titles = results.Select(result => (string)result["title"]).ToArray();
-            //var a = new { Genres = search["genres"].ToString(), Stars= search["stars"].ToString()  };
-
+            var stars = search["stars"].ToString();
+            movie.Director = search["stars"].ToString().Split(',')[0];
+            movie.Stars = stars.Substring(stars.IndexOf(", ") + 2); ;
             movie.Genres = search["genres"].ToString();
-            movie.Stars = search["stars"].ToString();
 
             return  movie;
         }
