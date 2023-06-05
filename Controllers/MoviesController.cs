@@ -1,3 +1,5 @@
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesManagment.Data;
@@ -21,7 +23,6 @@ namespace MoviesManagment.Controllers
             {
                 var data = await _context.Movies.ToListAsync();
                 
-                //List<Movie> newdata = new List<Movie>();
                 foreach (var item in data)
                 {
                     await MovieAPI.SearchMovies(item);
@@ -32,133 +33,77 @@ namespace MoviesManagment.Controllers
             return Problem("Entity set 'MovieContext.Movies'  is null.");
         }
 
-        // GET: Movies/Details/5
-        public async Task<IActionResult> Details(int? id)
+
+        public async Task<IActionResult>  Edit([DataSourceRequest] DataSourceRequest request, Movie movie)
         {
-            if (id == null || _context.Movies == null)
+            try
             {
-                return NotFound();
-            }
+                var originalMovie = _context.Movies.FirstOrDefault(m => m.Id == movie.Id);
 
-            var movie = await _context.Movies
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            return View(movie);
-        }
-
-        // GET: Movies/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Director,Genre,YearProduction")] Movie movie)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(movie);
-        }
-
-        // GET: Movies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Movies == null)
-            {
-                return NotFound();
-            }
-
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return View(movie);
-        }
-
-        // POST: Movies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Director,Genre,YearProduction")] Movie movie)
-        {
-            if (id != movie.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (originalMovie != null)
                 {
-                    _context.Update(movie);
+                    await MovieAPI.SearchMovies(originalMovie);
+                    originalMovie.Title = movie.Title;
+                    originalMovie.ReleaseYear = movie.ReleaseYear;
+                    originalMovie.Genres = movie.Genres;
+                    originalMovie.Stars = movie.Stars;
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovieExists(movie.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return Json(new[] { originalMovie}.ToDataSourceResult(request, ModelState));
             }
-            return View(movie);
+            catch (Exception ex)
+            {
+                // Obs³u¿ b³¹d i zwróæ odpowiedŸ z b³êdem jako JSON
+                ModelState.AddModelError("", "Wyst¹pi³ b³¹d podczas aktualizacji filmu.");
+                return Json(new[] { movie }.ToDataSourceResult(request, ModelState));
+            }
+        }
+
+        public async Task<IActionResult> Create([DataSourceRequest] DataSourceRequest request, Movie movie)
+        {
+            
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await MovieAPI.SearchMovies(movie);
+                    _context.Add(movie);
+                    _context.SaveChangesAsync();
+                }
+                return Json(new[] { movie }.ToDataSourceResult(request, ModelState));
+            }
+            catch (Exception ex)
+            {
+                // Obs³u¿ b³¹d i zwróæ odpowiedŸ z b³êdem jako JSON
+                ModelState.AddModelError("", "Wyst¹pi³ b³¹d podczas aktualizacji filmu.");
+                return Json(new[] { movie }.ToDataSourceResult(request, ModelState));
+            }
+
+            return Json(new[] { movie }.ToDataSourceResult(request, ModelState));
         }
 
         // GET: Movies/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete([DataSourceRequest] DataSourceRequest request, Movie movie)
         {
-            if (id == null || _context.Movies == null)
+            try
             {
-                return NotFound();
-            }
-
-            var movie = await _context.Movies
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            return View(movie);
-        }
-
-        // POST: Movies/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Movies == null)
-            {
-                return Problem("Entity set 'MovieContext.Movies'  is null.");
-            }
-            var movie = await _context.Movies.FindAsync(id);
-            if (movie != null)
-            {
+                // Usuñ film z bazy danych
                 _context.Movies.Remove(movie);
+                _context.SaveChanges();
+
+                // Zwróæ potwierdzenie usuniêcia jako JSON
+                return Json(new[] { movie }.ToDataSourceResult(request, ModelState));
+            }
+            catch (Exception ex)
+            {
+                // Obs³u¿ b³¹d i zwróæ odpowiedŸ z b³êdem jako JSON
+                ModelState.AddModelError("", "Wyst¹pi³ b³¹d podczas usuwania filmu.");
+                return Json(new[] { movie }.ToDataSourceResult(request, ModelState));
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
+
+       
 
         private bool MovieExists(int id)
         {

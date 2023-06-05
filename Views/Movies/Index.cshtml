@@ -3,41 +3,44 @@
 @{
     ViewData["Title"] = "Przegl¹d filmów";
 }
+@using Kendo.Mvc.UI
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
 
 <h1>Przegl¹d filmów</h1>
 
-<p>
+@*<p>
     <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+</p>*@
+@*<table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.YearProduction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Director)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genres)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stars)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReleaseYear)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Director)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Genres)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Stars)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.YearProduction)
+                @Html.DisplayFor(modelItem => item.ReleaseYear)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Director)
@@ -54,6 +57,51 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
-</table>
+</table>*@
+<div class="grid-container">
+    @(Html.Kendo().Grid<Movie>
+        (Model).Name("grid")
+        .Groupable()
+        .Sortable()
+        .Scrollable()
+        .Editable(editable => editable.Mode(GridEditMode.PopUp))
+        .ToolBar(x => x.Create())
+        .Pageable()
+        .Columns(columns =>
+        {
+            columns.Bound(column => column.Title);
+            columns.Bound(column => column.ReleaseYear);
+            columns.Bound(column => column.Director);
+            columns.Bound(column => column.Genres);
+            columns.Bound(column => column.Stars);
+            columns.Bound(column => column.Plot);
+            columns.Bound(column => column.ImdbRating);
+            columns.Command(column =>
+            {
+                column.Edit().Text("Edytuj");
+                column.Destroy().Text("Usuñ");
+            }).Width(250);
+        })
+        .DataSource(ds => ds.Ajax()
+        .Model(m =>
+        {
+            m.Id(id => id.Id);
+            m.Field(movie => movie.Id).Editable(false);
+        })
+        .Read(read => read.Action("Index", "Movies"))
+        .Create(create => create.Action("Create", "Movies"))
+        .Update(update => update.Action("Edit", "Movies"))
+        .Destroy(destroy => destroy.Action("Delete", "Movies"))
+        .PageSize(10)
+        )
+        )
+</div>
+
+<script>
+    function forgeryToken() {
+        return kendo.antiForgeryTokens();
+    }
+</script>
+

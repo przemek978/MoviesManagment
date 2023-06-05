@@ -39,7 +39,7 @@ namespace MoviesManagment.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("YearProduction")
+                    b.Property<string>("ReleaseYear")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

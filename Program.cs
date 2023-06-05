@@ -4,9 +4,15 @@ using MoviesManagment.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+// Add framework services.
+builder.Services
+	.AddControllersWithViews();
+	builder.Services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+// Add Kendo UI services to the services container
+builder.Services.AddKendo();
+
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 
 
 builder.Services.AddDbContext<MovieContext>(options =>
@@ -21,20 +27,20 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<MovieContext>();
-        dbContext.Database.EnsureCreated(); // Upewnij siê, ¿e baza danych istnieje
+        dbContext.Database.EnsureCreated(); // Upewnij siï¿½, ï¿½e baza danych istnieje
 
-        // SprawdŸ, czy baza danych jest pusta (nie ma jeszcze filmów)
+        // Sprawdï¿½, czy baza danych jest pusta (nie ma jeszcze filmï¿½w)
         if (!dbContext.Movies.Any())
         {
-            dbContext.Movies.Add(new Movie { Title = "Inception", YearProduction = "2010" });
-            dbContext.Movies.Add(new Movie { Title = "Joker", YearProduction = "2019" });
+            dbContext.Movies.Add(new Movie { Title = "Inception", ReleaseYear = "2010" });
+            dbContext.Movies.Add(new Movie { Title = "Joker", ReleaseYear = "2019" });
 
             dbContext.SaveChanges();
         }
     }
     catch (Exception ex)
     {
-        // Obs³uga b³êdów
+        // Obsï¿½uga bï¿½ï¿½dï¿½w
     }
 }
 
@@ -47,14 +53,14 @@ using (var scope = app.Services.CreateScope())
 //        var dbContext = services.GetRequiredService<MovieContext>();
 //        dbContext.Database.Migrate();
 
-//        dbContext.Movies.Add(new Movie { Title = "Film 1", Director = "Re¿yser 1", Genre = "Gatunek 1", YearProduction = "2022" });
-//        dbContext.Movies.Add(new Movie { Title = "Film 2", Director = "Re¿yser 2", Genre = "Gatunek 2", YearProduction = "2023" });
+//        dbContext.Movies.Add(new Movie { Title = "Film 1", Director = "Reï¿½yser 1", Genre = "Gatunek 1", ReleaseYear = "2022" });
+//        dbContext.Movies.Add(new Movie { Title = "Film 2", Director = "Reï¿½yser 2", Genre = "Gatunek 2", ReleaseYear = "2023" });
 
 //        dbContext.SaveChanges();
 //    }
 //    catch (Exception ex)
 //    {
-//        // Obs³uga b³êdów
+//        // Obsï¿½uga bï¿½ï¿½dï¿½w
 //    }
 //}
 
