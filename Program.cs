@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using MoviesManagment.Data;
 using MoviesManagment.Models;
+using MoviesManagment.Repositories;
+using MoviesManagment.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+
 // Add framework services.
 builder.Services
 	.AddControllersWithViews();
@@ -11,12 +14,12 @@ builder.Services
 // Add Kendo UI services to the services container
 builder.Services.AddKendo();
 
-
 // Add services to the container.
-
-
 builder.Services.AddDbContext<MovieContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString("MovieConnection")));
+    options.UseSqlServer(configuration.GetConnectionString("MovieConnection")),ServiceLifetime.Transient);
+
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
 var app = builder.Build();
 
@@ -27,9 +30,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<MovieContext>();
-        dbContext.Database.EnsureCreated(); // Upewnij si�, �e baza danych istnieje
+        dbContext.Database.EnsureCreated();
 
-        // Sprawd�, czy baza danych jest pusta (nie ma jeszcze film�w)
         if (!dbContext.Movies.Any())
         {
             dbContext.Movies.Add(new Movie { Title = "Inception", ReleaseYear = "2010" });
@@ -40,30 +42,9 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        // Obs�uga b��d�w
+        throw;
     }
 }
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
-
-//    try
-//    {
-//        var dbContext = services.GetRequiredService<MovieContext>();
-//        dbContext.Database.Migrate();
-
-//        dbContext.Movies.Add(new Movie { Title = "Film 1", Director = "Re�yser 1", Genre = "Gatunek 1", ReleaseYear = "2022" });
-//        dbContext.Movies.Add(new Movie { Title = "Film 2", Director = "Re�yser 2", Genre = "Gatunek 2", ReleaseYear = "2023" });
-
-//        dbContext.SaveChanges();
-//    }
-//    catch (Exception ex)
-//    {
-//        // Obs�uga b��d�w
-//    }
-//}
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

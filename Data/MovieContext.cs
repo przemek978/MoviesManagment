@@ -12,9 +12,10 @@ namespace MoviesManagment.Data
 
         }
         public DbSet<Movie> Movies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Ustawienia dodatkowe, np. konfiguracje relacji między tabelami
+
         }
 
     }

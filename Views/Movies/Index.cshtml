@@ -9,66 +9,16 @@
 
 <h1>Przegl¹d filmów</h1>
 
-@*<p>
-    <a asp-action="Create">Create New</a>
-</p>*@
-@*<table class="table">
-    <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ReleaseYear)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Director)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Genres)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Stars)
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseYear)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Director)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genres)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stars)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>*@
+
 <div class="grid-container">
     @(Html.Kendo().Grid<Movie>
         (Model).Name("grid")
         .Groupable()
         .Sortable()
         .Scrollable()
-        .Editable(editable => editable.Mode(GridEditMode.PopUp))
-        .ToolBar(x => x.Create())
         .Pageable()
+        .Editable(editable => editable.Mode(GridEditMode.PopUp))
+        .ToolBar(x => x.Create().HtmlAttributes(new { style = "background-color:green !important;" }))
         .Columns(columns =>
         {
             columns.Bound(column => column.Title);
@@ -76,12 +26,13 @@
             columns.Bound(column => column.Director);
             columns.Bound(column => column.Genres);
             columns.Bound(column => column.Stars);
-            columns.Bound(column => column.Plot);
             columns.Bound(column => column.ImdbRating);
             columns.Command(column =>
             {
                 column.Edit().Text("Edytuj");
-                column.Destroy().Text("Usuñ");
+                column.Custom("Button").Click("onButtonClick").Text("&#x1F50E; Wyszukaj film").HtmlAttributes(new { style = "background-color: blue; color: white; margin-inline-start: 0;" });
+                //columns.Bound(p => p.Id).ClientTemplate("<a asp-action="Details" asp-route-id="1">Details</a>").Title("Akcje").Width(100);
+                column.Destroy().Text("Usuñ").HtmlAttributes(new { style = "background-color: red; color: white; margin-inline-start: 0;" });
             }).Width(250);
         })
         .DataSource(ds => ds.Ajax()
@@ -100,8 +51,15 @@
 </div>
 
 <script>
+    function onButtonClick(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location.href = '@Url.Action("Details", "Movies")' + '?id=' + dataItem.Id;
+    }
     function forgeryToken() {
         return kendo.antiForgeryTokens();
     }
+
+
 </script>
 

@@ -23,27 +23,15 @@ namespace MoviesManagment.Models
         public string? Director { get; set; }
 
         [DisplayName("Gatunki")]
-        [RegularExpression(@"^([A-Za-z]+[-\s]*,\s*)*[A-Za-z]+[-\s]*$", ErrorMessage = "Nieprawidłowy format gatunków.")]
+        [RegularExpression(@"^([A-Za-z]+-?[A-Za-z]*(?:,\s*)?)*$", ErrorMessage = "Nieprawidłowy format gatunków.")]
         public string? Genres { get; set; }//api
 
         [DisplayName("Gwiazdy")]
-        [RegularExpression(@"^([A-Za-z]+[-\s]*,\s*)*[A-Za-z]+[-\s]*$", ErrorMessage = "Nieprawidłowy format gwiazd.")]
+        [RegularExpression(@"^([A-Za-z\s-]+,\s*)*[A-Za-z\s-]+$", ErrorMessage = "Nieprawidłowy format gwiazd.")]
         public string? Stars { get; set; }//api
 
         [DisplayName("Ocena")]
         public string? ImdbRating { get; set; }
 
-        [DisplayName("Fabuła")]
-        public string? Plot { get; set; }
-
-        //public string? Director { get; set; } //api
-        //public Movie(Movie movie)
-        //{
-        //    Id=movie.Id;
-        //    Title=movie.Title;
-        //    ReleaseYear=movie.ReleaseYear;
-        //    Genre=movie.Genre;
-        //    Director = movie.Director;
-        //}
     }
 }

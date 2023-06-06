@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MoviesManagment.styles.css" asp-append-version="true" />
-    
+
     <environment include="Development">
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -26,52 +26,18 @@
 </head>
 <body class="k-content">
     <header>
-        <nav class="navbar navbar-dark bg-dark mb-5">
-            <div class="k-header container" style="flex-wrap: nowrap">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Movies Managment</a>
-                <a class="nav-link text-light" style asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                <a class="nav-link text-light" asp-area="" asp-controller="Movies" asp-action="Index">Movies</a>
-                <div class="k-header container">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-
-                        </li>
-                        <li class="nav-item">
-                        </li>
-                    </ul>
-                </div>
+        <nav class="navbar navbar-dark mb-5" style="background-color: #E2F03C;">
+            <div class="k-header container" style="flex-wrap: nowrap; text-size: 18px;">
+                <a class="navbar-brand text-dark" style="font-size: 32px; font-weight: bold;" asp-controller="Home" asp-action="Index">Movies Managment</a>
+                <a class="nav-link text-dark" style="font-size: 22px;" asp-area="" asp-controller="Movies" asp-action="Index">Movies</a>
             </div>
         </nav>
-        @*<nav class="navbar navbar-dark bg-dark mb-5">
-        <div class="k-header container">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MoviesManagment</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="k-header container">
-        <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-        </li>
-        <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Movies" asp-action="Index">Movies</a>
-        </li>
-        </ul>
-        </div>
-        </div>
-        </nav>*@
+
     </header>
     <div class="container">
 
-            @RenderBody()
+        @RenderBody()
     </div>
-    @*
-    <footer class="border-top footer text-muted">
-    <div class="container">
-    &copy; 2023 -
-    </div>
-    </footer>*@
 
     <footer class="footer text-center d-flex align-items-center">
         <div class="container-fluid">
