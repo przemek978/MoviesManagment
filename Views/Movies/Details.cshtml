@@ -23,9 +23,22 @@
         @Html.HiddenFor(model => model.ImdbRating)
 
         @(Html.Kendo().Button()
-            .Name("submit")
+            .Name("Submit")
             .Content("Zapisz Dane")
             .HtmlAttributes(new { type = "submit", style = "background-color: green; color: white; margin-inline-start: 0;" })
             )
+        @(Html.Kendo().Button()
+            .Name("Cancel")
+            .Content("Anuluj")
+            .HtmlAttributes(new { style = "background-color: red; color: white; margin-inline-start: 0;" })
+            .Events(events => events.Click("goBack"))
+            )
+
     }
 </div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
