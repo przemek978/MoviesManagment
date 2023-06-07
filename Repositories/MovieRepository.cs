@@ -82,7 +82,7 @@ namespace MoviesManagment.Repositories
         {
             try
             {
-                var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == 10);
+                var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == id);
 
                 if (movie != null)
                 {

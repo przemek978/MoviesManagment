@@ -26,10 +26,6 @@ namespace MoviesManagment.Services
             {
                 StringBuilder endpoint = new StringBuilder($"/API/AdvancedSearch/k_e3j097kj?title=" + movie.Title + "&release_date=" + movie.ReleaseYear + "-01-01," + movie.ReleaseYear + "-12-31");
 
-                if (movie.ImdbRating != null)
-                {
-                    endpoint.Append("&imDbRating=" + movie.ImdbRating);
-                }
                 if (movie.Genres != null)
                 {
                     endpoint.Append("&genres=" + movie.Genres);
@@ -37,6 +33,10 @@ namespace MoviesManagment.Services
                 if (movie.Stars != null)
                 {
                     endpoint.Append("&stars=" + movie.Stars);
+                }
+                if (movie.ImdbRating != null)
+                {
+                    endpoint.Append("&imDbRating=" + movie.ImdbRating);
                 }
 
                 HttpResponseMessage response = await httpClient.GetAsync(endpoint.ToString());
@@ -53,6 +53,7 @@ namespace MoviesManagment.Services
                 if (search != null)
                 {
                     var stars = search["stars"].ToString();
+                    movie.Title = search["title"].ToString();
                     movie.Director = search["stars"].ToString().Split(',')[0];
                     movie.Stars = stars.Substring(stars.IndexOf(", ") + 2);
                     movie.Genres = search["genres"].ToString();
