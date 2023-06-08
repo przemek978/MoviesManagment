@@ -15,39 +15,34 @@ namespace MoviesManagment.Models
         public int Id { get; set; }
 
         // The title of the movie on the basis of which data in the API are searched.
-        [Required(ErrorMessage = "Tytuł jest wymagany")]
         [DisplayName("Tytuł")]
+        [Required(ErrorMessage = "Tytuł jest wymagany")]
         public string Title { get; set; }
 
         // The year of manufacture on the basis of which data is searched in the API.
         [Required(ErrorMessage = "Rok produkcji jest wymagany")]
         [DisplayName("Rok produkcji")]
-        [RegularExpression(@"^\d{4}$", ErrorMessage = "Rok produkcji musi byc liczba w formacie YYYY")]
+        [RegularExpression(@"^\d{4}$", ErrorMessage = "Rok produkcji musi byc liczba w formacie YYYY od 1850 do 2030")]
         public string ReleaseYear { get; set; }
 
         // Species are not required but are given after a comma will be included in the search.
         [DisplayName("Gatunki")]
-        // Możliwe podanie gatunków po przecinku które zawierja myslnik np. Sci-fi,
-        // Cyfry ani spacje niedozowolone.
-        [RegularExpression(@"^[A-Za-z]+(?:-[A-Za-z]+)?(?:,\s*[A-Za-z]+(?:-[A-Za-z]+)?)*$", ErrorMessage = "Nieprawidłowy format gatunków.")]
+        [RegularExpression(@"^([^0-9]+,)*[^0-9]+$", ErrorMessage = "Nieprawidłowy format gatunków. Wymieniaj gatunki po przecinku bez cyfr")]
         public string? Genres { get; set; }
 
         //Stars are not required but when given after a decimal point will be included in the search.
         [DisplayName("Gwiazdy")]
-        // Możliwe podawanie imion i nazwisk w roznych formatach do dwoch imion i nazwisk z myslnikami lub spacjami,
-        // Cyfry niedozowolne.
-        [RegularExpression(@"^(?:[A-Z][a-z]+(?:-[A-Z][a-z]+)?(?:\s+(?:[A-Z][a-z]+(?:-[A-Z][a-z]+)?))*|)(?:,\s*(?:[A-Z][a-z]+(?:-[A-Z][a-z]+)?(?:\s+(?:[A-Z][a-z]+(?:-[A-Z][a-z]+)?))*|))*$", ErrorMessage = "Nieprawidłowy format gwiazd.")]
+        [RegularExpression(@"^([^0-9]+,)*[^0-9]+$", ErrorMessage = "Nieprawidłowy format gwiazd. Wymieniaj gwiazdy po przecinku bez cyfr")]
         public string? Stars { get; set; }//api
 
         //Rating that is not required but when given in the range of 1.0 - 10.0 will be included in the search.
         [DisplayName("Ocena")]
-        //Możliwe podanie liczby z zakresu 1.0 - 10.0.
-        [RegularExpression(@"^(10\.0|[1-9]\.[0-9])$", ErrorMessage = "Nieprawidłowy format oceny")]
+        [RegularExpression(@"^(10\.0|[1-9]\.[0-9])$", ErrorMessage = "Nieprawidłowy format oceny. Podaj liczbe z zakresu 1.0 - 10.0")]
         public string? ImdbRating { get; set; }
 
         //Director is not required and is not included in the search.
         [DisplayName("Reżyser")]
-        [RegularExpression(@"^[A-Z][a-z]+(?:-[A-Z][a-z]+)?(?: [A-Z][a-z]+(?:-[A-Z][a-z]+)?){1,2}$",ErrorMessage ="Nieprawidłowy format reżysera")]
+        [RegularExpression(@"^[^0-9,]+$", ErrorMessage ="Nieprawidłowy format reżysera. Podaj jednego reżysera nie używając cyfr")]
         public string? Director { get; set; }
     }
 }

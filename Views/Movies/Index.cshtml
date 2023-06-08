@@ -9,13 +9,11 @@
 
 <h1>Przegl¹d filmów</h1>
 
-
 <div class="grid-container">
     @(Html.Kendo().Grid<Movie>
         (Model).Name("grid")
         .Columns(columns =>
         {
-            columns.Bound(column => column.Id);
             columns.Bound(column => column.Title);
             columns.Bound(column => column.ReleaseYear);
             columns.Bound(column => column.Genres);
@@ -25,7 +23,7 @@
             columns.Command(column =>
             {
                 column.Edit().Text("Edytuj");
-                column.Custom("Button").Click("onButtonClick").Text("&#x1F50E; Wyszukaj film").HtmlAttributes(new { style = "background-color: blue; color: white; margin-inline-start: 0;" });
+                column.Custom("Button").Click("onButtonClick").Text("&#x1F50E; Wyszukaj film w API").HtmlAttributes(new { style = "background-color: blue; color: white; margin-inline-start: 0;" });
                 column.Destroy().Text("Usuñ").HtmlAttributes(new { style = "background-color: red; color: white; margin-inline-start: 0;" });
             }).Width(250);
         })
