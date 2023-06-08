@@ -22,7 +22,7 @@ namespace MoviesManagment.Models
         // The year of manufacture on the basis of which data is searched in the API.
         [Required(ErrorMessage = "Rok produkcji jest wymagany")]
         [DisplayName("Rok produkcji")]
-        [RegularExpression(@"^\d{4}$", ErrorMessage = "Rok produkcji musi byc liczba w formacie YYYY od 1850 do 2030")]
+        [RegularExpression(@"^(19[0-9]{2}|20[0-2][0-9]|2030)$", ErrorMessage = "Rok produkcji musi byc liczba w formacie YYYY od 1900 do 2030")]
         public string ReleaseYear { get; set; }
 
         // Species are not required but are given after a comma will be included in the search.

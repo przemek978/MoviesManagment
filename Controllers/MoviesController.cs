@@ -14,6 +14,7 @@ namespace MoviesManagement.Controllers
     public class MoviesController : Controller
     {
         private readonly IMovieService _movieService;
+        private List<Movie> movies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MoviesController"/> class.
@@ -22,6 +23,7 @@ namespace MoviesManagement.Controllers
         public MoviesController(IMovieService movieService)
         {
             _movieService = movieService;
+            movies= new List<Movie>();
         }
 
         /// <summary>
@@ -30,8 +32,18 @@ namespace MoviesManagement.Controllers
         /// <returns>The view displaying a list of movies.</returns>
         public async Task<IActionResult> Index()
         {
-            var movies = _movieService.GetMovies();
-            return View(movies);
+            return View();
+        }
+
+        /// <summary>
+        /// Retrieves movies from the database based on the provided data source request.
+        /// </summary>
+        /// <param name="request">Object to connect to telerik.</param>
+        /// <returns>A JSON result containing the movies from the database.</returns>
+        public ActionResult GetMovies([DataSourceRequest] DataSourceRequest request)
+        {
+            movies = _movieService.GetMovies();
+            return Json(movies.ToDataSourceResult(request));
         }
 
         /// <summary>

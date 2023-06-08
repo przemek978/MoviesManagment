@@ -8,10 +8,11 @@
 @Html.AntiForgeryToken()
 
 <h1>Przegl¹d filmów</h1>
-
+<h4> Uwaga! Nale¿y podawaæ tytu³ oryginalny filmu</h4>
 <div class="grid-container">
     @(Html.Kendo().Grid<Movie>
         (Model).Name("grid")
+        .HtmlAttributes(new { style = "margin-bottom: 100px;" })
         .Columns(columns =>
         {
             columns.Bound(column => column.Title);
@@ -27,26 +28,31 @@
                 column.Destroy().Text("Usuñ").HtmlAttributes(new { style = "background-color: red; color: white; margin-inline-start: 0;" });
             }).Width(250);
         })
+        .Height(700)
         .Scrollable()
-        .Pageable()
         .Editable(editable => editable.Mode(GridEditMode.PopUp))
         .ToolBar(x => x.Create().HtmlAttributes(new { style = "background-color:green !important;" }))
-        .DataSource(ds => ds.Ajax()
-        .Model(m =>
-        {
-            m.Id(id => id.Id);
-            m.Field(movie => movie.Id).Editable(false);
-        })
-        .Read(read => read.Action("Index", "Movies"))
-        .Create(create => create.Action("Create", "Movies"))
-        .Update(update => update.Action("Edit", "Movies"))
-        .Destroy(destroy => destroy.Action("Delete", "Movies"))
-        .PageSize(10)
+        .DataSource(ds => ds
+            .Ajax()
+            .ServerOperation(true)
+            .Model(m =>
+            {
+                m.Id(id => id.Id);
+                m.Field(movie => movie.Id).Editable(false);
+            })
+            .Read(read => read.Action("GetMovies", "Movies"))
+            .Create(create => create.Action("Create", "Movies"))
+            .Update(update => update.Action("Edit", "Movies"))
+            .Destroy(destroy => destroy.Action("Delete", "Movies"))
+            .PageSize(5)
         )
+        .Pageable()
+        .Sortable()
         )
 </div>
 
 <script>
+
     function onButtonClick(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
